@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="toy_summary">La hora con el tiempo, la temperatura y la batería</string>
+  <string name="city">Ciudad</string>
+  <string name="search">Buscar</string>
+  <string name="searching">Buscando…</string>
+  <string name="not_found">No encuentro esa ciudad</string>
+  <string name="offline">Sin conexión, prueba otra vez</string>
+  <string name="refresh">Actualizar el tiempo</string>
+  <string name="language">Idioma</string>
+  <string name="on_top">Arriba</string>
+  <string name="time">Hora</string>
+  <string name="unit">Temperatura</string>
+  <string name="celsius">°C</string>
+  <string name="fahrenheit">°F</string>
+  <string name="clock">Formato de hora</string>
+  <string name="clock_auto">Auto</string>
+  <string name="clock_24">24 h</string>
+  <string name="clock_12">12 h</string>
+  <string name="show_time">Mostrar la hora</string>
+  <string name="show_weather">Tiempo</string>
+  <string name="show_battery">Batería</string>
+  <string name="show_rain">Aviso de lluvia</string>
+  <string name="rain_short">Lluvia</string>
+  <string name="night">Atenuar de noche</string>
+  <string name="night_short">Noche</string>
+  <string name="night_hours">Horario nocturno</string>
+  <string name="pocket">Apagar en el bolsillo</string>
+  <string name="pocket_short">Bolsillo</string>
+  <string name="brightness">Brillo</string>
+  <string name="activate">Añadir a Glyph Toys</string>
+  <string name="no_toys">Abre Ajustes › Interfaz Glyph › Glyph Toys</string>
+  <string name="long_press">Mantén pulsado el botón Glyph: máxima y mínima de hoy</string>
+  <string name="credit">Datos del tiempo: Open-Meteo</string>
+  <string name="updated">Actualizado %1$s</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="toy_summary">显示时间、天气、温度和电量</string>
+  <string name="city">城市</string>
+  <string name="search">搜索</string>
+  <string name="searching">正在搜索…</string>
+  <string name="not_found">找不到该城市</string>
+  <string name="offline">无网络连接，请重试</string>
+  <string name="refresh">刷新天气</string>
+  <string name="language">语言</string>
+  <string name="on_top">顶部</string>
+  <string name="time">时间</string>
+  <string name="unit">温度</string>
+  <string name="celsius">°C</string>
+  <string name="fahrenheit">°F</string>
+  <string name="clock">时间格式</string>
+  <string name="clock_auto">自动</string>
+  <string name="clock_24">24 时</string>
+  <string name="clock_12">12 时</string>
+  <string name="show_time">显示时间</string>
+  <string name="show_weather">天气</string>
+  <string name="show_battery">电量</string>
+  <string name="show_rain">降雨提醒</string>
+  <string name="rain_short">降雨</string>
+  <string name="night">夜间调暗</string>
+  <string name="night_short">夜间</string>
+  <string name="night_hours">夜间时段</string>
+  <string name="pocket">放入口袋时关闭</string>
+  <string name="pocket_short">口袋</string>
+  <string name="brightness">亮度</string>
+  <string name="activate">添加到 Glyph 玩具</string>
+  <string name="no_toys">打开 设置 › Glyph 界面 › Glyph 玩具</string>
+  <string name="long_press">长按 Glyph 按钮：今日最高和最低气温</string>
+  <string name="credit">天气数据：Open-Meteo</string>
+  <string name="updated">更新于%1$s</string>
+</resources>

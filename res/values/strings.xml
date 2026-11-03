@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name" translatable="false">GlyphCast</string>
+  <string name="toy_name" translatable="false">GlyphCast</string>
+  <string name="toy_summary">The time with the weather, temperature and battery</string>
+  <string name="city">City</string>
+  <string name="search">Search</string>
+  <string name="searching">Searching…</string>
+  <string name="not_found">City not found</string>
+  <string name="offline">No connection, try again</string>
+  <string name="refresh">Refresh weather</string>
+  <string name="language">Language</string>
+  <string name="lang_es" translatable="false">ES</string>
+  <string name="lang_en" translatable="false">EN</string>
+  <string name="lang_zh" translatable="false">中文</string>
+  <string name="on_top">On top</string>
+  <string name="time">Time</string>
+  <string name="unit">Temperature</string>
+  <string name="celsius">°C</string>
+  <string name="fahrenheit">°F</string>
+  <string name="clock">Time format</string>
+  <string name="clock_auto">Auto</string>
+  <string name="clock_24">24 h</string>
+  <string name="clock_12">12 h</string>
+  <string name="show_time">Show the time</string>
+  <string name="show_weather">Weather</string>
+  <string name="show_battery">Battery</string>
+  <string name="show_rain">Rain alert</string>
+  <string name="rain_short">Rain</string>
+  <string name="night">Dim at night</string>
+  <string name="night_short">Night</string>
+  <string name="night_hours">Night hours</string>
+  <string name="pocket">Turn off in pocket</string>
+  <string name="pocket_short">Pocket</string>
+  <string name="brightness">Brightness</string>
+  <string name="activate">Add to Glyph Toys</string>
+  <string name="no_toys">Open Settings › Glyph Interface › Glyph Toys</string>
+  <string name="long_press">Hold the Glyph Button: today\'s high and low</string>
+  <string name="credit">Weather data by Open-Meteo</string>
+  <string name="updated">Updated %1$s</string>
+</resources>
