@@ -9,14 +9,16 @@ GlyphCast is a [Glyph Toy](https://nothing.community/t/glyph-sdk) for the 25 × 
 ## Features
 
 - **Time, weather and battery** on one screen, with a mirrored "time on top" layout, or weather and battery alone with the time turned off.
-- **Thin pixel weather icons**: sun, sun behind clouds, clouds, fog, rain, snow and storm.
-- **Real moon phase** on clear nights, computed on the phone, and a moon behind the cloud on partly cloudy nights.
+- **Thin pixel weather icons**: sun, sun behind clouds, clouds, fog, rain, showers, snow, sleet, hail and storm.
+- **Real moon phase**, computed on the phone: the full moon disc on clear nights, and a small moon in the same phase behind the cloud on partly cloudy and showery nights.
+- **Eclipses**: solar eclipses by day and lunar eclipses by night replace the weather icon while they last, from NASA's tables up to 2040.
 - **Rain alert**: a small drop appears when rain is expected within the next hour.
 - **Today's high and low**: long press the Glyph Button to see them for 5 seconds.
 - **Battery bar** that sweeps while charging and blinks slowly below 15 %.
 - **Night mode** that dims the matrix at night, from 23:00 to 07:00 by default.
 - **Pocket detection** that turns the matrix off in a pocket but keeps it on when the phone lies face down on a table.
 - **Settings with live preview**: an icon for each setting, a city picker when several places match, language, layout, °C/°F, 12/24 h, what to show, brightness and night hours.
+- **Icon gallery**: every weather icon, moon phase and eclipse in one list; tap one to see it on the matrix.
 - **Languages**: English, Spanish and Simplified Chinese, following the phone or chosen in the app.
 - **Always-on** support: the toy keeps updating while the screen is off.
 
@@ -28,7 +30,7 @@ GlyphCast is a [Glyph Toy](https://nothing.community/t/glyph-sdk) for the 25 × 
 
 ## Install
 
-1. Get `bin/glyphcast.apk`, either by building it (see below) or from someone who built it.
+1. Download `glyphcast.apk` from the [latest release](https://github.com/danijerez/glyph-cast/releases/latest), or build it yourself (see below).
 2. Open it on the phone. Allow installing apps from that source when Android asks; if Play Protect complains, choose *Install anyway*.
 3. Open **GlyphCast**, type your city and tap the search button; if several places match, pick yours from the list. The preview at the top shows the matrix as it will look.
 4. Tap **Add to Glyph Toys** and enable GlyphCast. If the button does nothing, go to *Settings › Glyph Interface › Glyph Toys*.
@@ -52,6 +54,7 @@ Updates install over the previous version and keep your settings, **as long as t
 | Pocket | Turn off in a pocket, based on proximity + orientation |
 | Brightness | 20–100 % |
 | Night hours | Start and end time for night dimming, 23:00–07:00 by default |
+| Weather icons | *Preview icons* opens a list of every icon with its name; tap one to show it for 5 seconds on the preview and on the matrix |
 
 Time, weather, battery, rain, night and pocket are the six tiles below the preview; long press any icon to see what it does.
 
@@ -78,7 +81,7 @@ build.cmd
 ./build.sh
 ```
 
-The scripts check the prerequisites and run `node build.mjs`. The result is `bin/glyphcast.apk`, about 70 KB.
+The scripts check the prerequisites and run `node build.mjs`. The result is `bin/glyphcast.apk`, about 85 KB.
 
 ### What the build downloads
 
@@ -141,6 +144,7 @@ imgs/preview.png           Preview of the matrix
 
 - When GlyphCast is selected, the system binds `ToyService`. The service draws a frame on each minute tick, on the Always-on event and whenever a setting changes. It draws faster only while the battery bar is animating.
 - Weather comes from [Open-Meteo](https://open-meteo.com) every 30 minutes; if the phone is offline, it retries after 5 minutes. A single small request returns the current conditions, the rain for the next hour in 15-minute steps, and today's high and low. Weather older than 3 hours is hidden.
+- The moon phase and the eclipses need no connection: the phase is computed from the date, and the eclipse dates are built in. A solar eclipse shows for two hours either side of its peak whenever it is day at your city, without checking whether its path crosses it; a lunar eclipse shows during its partial phase whenever it is night, which is when the moon is up.
 - Each frame lights about 100 of the 489 LEDs, and the app does no work while the toy is not selected, so the battery impact is minimal.
 
 ## Privacy
@@ -155,6 +159,7 @@ imgs/preview.png           Preview of the matrix
   - It must not be redistributed on its own, so it is **not included in this repository**; the build downloads it.
   - **Commercial use requires prior written permission from Nothing.**
 - **Weather data**: [Open-Meteo](https://open-meteo.com), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Attribution is shown in the app. The free API is for non-commercial use.
+- **Eclipse dates**: eclipse predictions by Fred Espenak, NASA/GSFC ([eclipse.gsfc.nasa.gov](https://eclipse.gsfc.nasa.gov)).
 - **Android build-tools and platform**: by downloading them through the build you accept the [Android Software Development Kit License Agreement](https://developer.android.com/studio/terms).
 - **D8 / R8**: BSD 3-Clause License.
 - **Icons, pixel fonts and code**: original work for this project, for personal use.
