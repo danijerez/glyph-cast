@@ -10,14 +10,22 @@ public final class FaceCheck {
     check(leds == 489, "LED count " + leds);
 
     check(Face.kind(0) == Face.CLEAR && Face.kind(2) == Face.PARTLY && Face.kind(3) == Face.CLOUD && Face.kind(45) == Face.FOG
-        && Face.kind(61) == Face.RAIN && Face.kind(73) == Face.SNOW && Face.kind(95) == Face.STORM, "weather codes");
+        && Face.kind(61) == Face.RAIN && Face.kind(73) == Face.SNOW && Face.kind(95) == Face.STORM && Face.kind(81) == Face.SHOWERS
+        && Face.kind(99) == Face.HAIL && Face.kind(66) == Face.SLEET && Face.kind(86) == Face.SNOW, "weather codes");
+
+    long total = java.time.Instant.parse("2027-08-02T10:07:49Z").toEpochMilli();
+    long blood = java.time.Instant.parse("2028-12-31T16:53:15Z").toEpochMilli();
+    check(Face.eclipse(total, true) == Face.SOLAR_ECLIPSE && Face.eclipse(total + 3600000, true) == Face.SOLAR_ECLIPSE, "solar eclipse");
+    check(Face.eclipse(total, false) == -1 && Face.eclipse(total + 3 * 3600000, true) == -1, "solar eclipse window");
+    check(Face.eclipse(blood, false) == Face.LUNAR_ECLIPSE && Face.eclipse(blood, true) == -1, "lunar eclipse");
+    check(Face.eclipse(blood + 2 * 3600000, false) == -1, "lunar eclipse window");
 
     double phase = Face.moonPhase(FULL_MOON);
     check(Math.abs(phase - 0.5) < 0.03, "moon phase " + phase);
 
     for (int layout : new int[] {Face.WEATHER_ON_TOP, Face.TIME_ON_TOP}) {
       for (Integer temperature : new Integer[] {null, -40, -5, 0, 21, 104}) {
-        for (int kind = Face.CLEAR; kind <= Face.STORM; kind++) {
+        for (int kind = Face.CLEAR; kind < Face.KINDS; kind++) {
           for (int battery : new int[] {-1, 0, 10, 100}) {
             for (boolean clock : new boolean[] {true, false}) {
               inside(Face.draw(new Face.Scene(23, 59, temperature, kind, kind % 2 == 0, 0.3, battery, battery == 10, true, 3, layout, false, clock)));
@@ -27,6 +35,11 @@ public final class FaceCheck {
       }
     }
     inside(Face.detail(-12, 35));
+    for (int i = 0; i < Face.SAMPLES; i++) {
+      int[] sample = Face.sample(i);
+      inside(sample);
+      check(java.util.Arrays.stream(sample).anyMatch(level -> level > 0), "sample " + i + " is empty");
+    }
 
     int[] twelve = Face.draw(new Face.Scene(8, 8, null, Face.CLEAR, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, true, true));
     int left = Face.SIZE;

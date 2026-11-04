@@ -9,9 +9,38 @@ public final class Face {
   public static final int RAIN = 4;
   public static final int SNOW = 5;
   public static final int STORM = 6;
+  public static final int SHOWERS = 7;
+  public static final int HAIL = 8;
+  public static final int SLEET = 9;
+  public static final int SOLAR_ECLIPSE = 10;
+  public static final int LUNAR_ECLIPSE = 11;
+  public static final int KINDS = 12;
   public static final int WEATHER_ON_TOP = 0;
   public static final int TIME_ON_TOP = 1;
   public static final long FRAME = 500;
+  public static final int MOON_PHASES = 8;
+  private static final int[] NIGHT_SAMPLES = {CLEAR, PARTLY, SHOWERS};
+  public static final int SAMPLES = KINDS + NIGHT_SAMPLES.length * MOON_PHASES; // day icons, then every moon phase per night sky
+
+  // NASA eclipse tables (eclipse.gsfc.nasa.gov), greatest eclipse in TD (~1 min off UTC). Penumbral lunar eclipses left out.
+  private static final long SOLAR_HALF = 2 * 60 * 60 * 1000L; // ponytail: global window, not checked against the local path
+  private static final String[] SOLAR = {
+    "2027-02-06T16:00:47Z", "2027-08-02T10:07:49Z", "2028-01-26T15:08:58Z", "2028-07-22T02:56:39Z", "2029-01-14T17:13:47Z",
+    "2029-06-12T04:06:13Z", "2029-07-11T15:37:18Z", "2029-12-05T15:03:57Z", "2030-06-01T06:29:13Z", "2030-11-25T06:51:37Z",
+    "2031-05-21T07:16:04Z", "2031-11-14T21:07:30Z", "2032-05-09T13:26:42Z", "2032-11-03T05:34:12Z", "2033-03-30T18:02:35Z",
+    "2033-09-23T13:54:31Z", "2034-03-20T10:18:45Z", "2034-09-12T16:19:27Z", "2035-03-09T23:05:53Z", "2035-09-02T01:56:46Z",
+    "2036-02-27T04:46:49Z", "2036-07-23T10:32:06Z", "2036-08-21T17:25:45Z", "2037-01-16T09:48:55Z", "2037-07-13T02:40:35Z",
+    "2038-01-05T13:47:10Z", "2038-07-02T13:32:54Z", "2038-12-26T01:00:10Z", "2039-06-21T17:12:53Z", "2039-12-15T16:23:46Z",
+    "2040-05-11T03:43:02Z", "2040-11-04T19:09:01Z"
+  };
+  // greatest eclipse and umbral (partial phase) duration in minutes
+  private static final String[] LUNAR = {
+    "2028-01-12T04:14:13Z 56", "2028-07-06T18:20:57Z 141", "2028-12-31T16:53:15Z 209", "2029-06-26T03:23:22Z 220",
+    "2029-12-20T22:43:12Z 213", "2030-06-15T18:34:34Z 144", "2032-04-25T15:14:51Z 211", "2032-10-18T19:03:40Z 196",
+    "2033-04-14T19:13:51Z 215", "2033-10-08T10:56:23Z 202", "2034-09-28T02:47:37Z 27", "2035-08-19T01:12:15Z 77",
+    "2036-02-11T22:13:06Z 202", "2036-08-07T02:52:32Z 231", "2037-01-31T14:01:38Z 197", "2037-07-27T04:09:53Z 192",
+    "2039-06-06T18:54:25Z 179", "2039-11-30T16:56:28Z 206", "2040-05-26T11:46:22Z 211", "2040-11-18T19:04:41Z 220"
+  };
 
   private static final int[] HALF_WIDTHS = {3, 5, 7, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 11, 11, 10, 10, 9, 8, 7, 5, 3};
   private static final int TIME = 255;
@@ -21,9 +50,10 @@ public final class Face {
   private static final int BATTERY = 200;
   private static final int TRACK = 60;
   private static final int FAINT = 50;
-  private static final int MOON_WIDTH = 9;
-  private static final int MOON_HEIGHT = 9;
+  private static final int MOON_SIZE = 9;
   private static final double MOON_RADIUS = 4.4;
+  private static final int SMALL_MOON = 5;
+  private static final double SMALL_MOON_RADIUS = 2.4;
   private static final double NEW_MOON_DAY = 10962.76;
   private static final double SYNODIC_MONTH = 29.530588853;
   private static final int[] BATTERY_ROW = {14, 10};
@@ -74,17 +104,30 @@ public final class Face {
   private static final String[] DROP = {".#.", "###", "###"};
   private static final String[] UP = {".#.", "###", ".#.", ".#.", ".#."};
   private static final String[] DOWN = {".#.", ".#.", ".#.", "###", ".#."};
-  private static final String[] PARTLY_NIGHT = {
-    "..++.....",
-    ".++......",
-    ".+.......",
-    ".+..##...",
-    ".+.#..##.",
+  private static final String[] NIGHT_CLOUD = {
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    "....##...",
+    "...#..##.",
     "..#.....#",
     ".#......#",
-    ".#######.",
-    "........."
+    ".#######."
   };
+  // '_' is cloud interior: hides whatever sits behind the cloud
+  private static final String[] SHOWER_CLOUD = {
+    ".........",
+    ".........",
+    "....##...",
+    "...#__##.",
+    "..#_____#",
+    ".#______#",
+    ".#######.",
+    "..#..#..#",
+    ".#..#..#."
+  };
+  private static final String[] SMALL_SUN = {"+.+.+", ".+++.", "+++++", ".+++.", "+.+.+"};
 
   private static final String[][] ICONS = {
     {
@@ -163,6 +206,51 @@ public final class Face {
       "...##....",
       "....##...",
       "...#....."
+    },
+    behind(SHOWER_CLOUD, SMALL_SUN),
+    {
+      "....###..",
+      ".##.#..#.",
+      "#..#....#",
+      "#.......#",
+      ".#######.",
+      ".........",
+      ".#..#..#.",
+      ".........",
+      "...#..#.."
+    },
+    {
+      "....###..",
+      ".##.#..#.",
+      "#..#....#",
+      "#.......#",
+      ".#######.",
+      ".........",
+      "..#...#..",
+      ".#...###.",
+      "......#.."
+    },
+    {
+      "....#....",
+      ".#.+++.#.",
+      "..+---+..",
+      ".+-----+.",
+      "#+-----+#",
+      ".+-----+.",
+      "..+---+..",
+      ".#.+++.#.",
+      "....#...."
+    },
+    {
+      "...###...",
+      ".###++++.",
+      ".##+++++.",
+      "##+++++++",
+      "#++++++++",
+      "#++++++++",
+      ".+++++++.",
+      ".+++++++.",
+      "...+++..."
     }
   };
 
@@ -177,9 +265,22 @@ public final class Face {
     if (code == 2) return PARTLY;
     if (code == 3) return CLOUD;
     if (code == 45 || code == 48) return FOG;
-    if (code >= 95) return STORM;
+    if (code >= 96) return HAIL;
+    if (code == 95) return STORM;
+    if (code == 56 || code == 57 || code == 66 || code == 67) return SLEET;
+    if (code >= 80 && code <= 82) return SHOWERS;
     if ((code >= 71 && code <= 77) || code == 85 || code == 86) return SNOW;
     return RAIN;
+  }
+
+  // Solar eclipses show by day, lunar ones by night (the moon is up when the sun is down); -1 when none.
+  public static int eclipse(long millis, boolean day) {
+    for (String entry : day ? SOLAR : LUNAR) {
+      String[] parts = entry.split(" ");
+      long half = day ? SOLAR_HALF : Long.parseLong(parts[1]) * 30000L;
+      if (Math.abs(millis - java.time.Instant.parse(parts[0]).toEpochMilli()) <= half) return day ? SOLAR_ECLIPSE : LUNAR_ECLIPSE;
+    }
+    return -1;
   }
 
   public static double moonPhase(long millis) {
@@ -209,8 +310,8 @@ public final class Face {
       return pixels;
     }
     int kind = scene.kind();
-    boolean drop = scene.rainSoon() && kind != RAIN && kind != STORM && kind != SNOW;
-    String[] icon = scene.day() ? ICONS[kind] : kind == CLEAR ? moon(scene.moon()) : kind == PARTLY ? PARTLY_NIGHT : ICONS[kind];
+    boolean drop = scene.rainSoon() && (kind < RAIN || kind > SLEET);
+    String[] icon = icon(kind, scene.day(), scene.moon());
     String text = Integer.toString(Math.abs(temperature));
     int sign = temperature < 0 ? MINUS[0].length() + 1 : 0;
     if (alone) {
@@ -228,6 +329,23 @@ public final class Face {
     stamp(pixels, icon, x, BAND_TOP[scene.layout()], ICON);
     number(pixels, x + icon[0].length() + GAP, TEMP_TOP[scene.layout()], temperature, degree, TEMP, SMALL);
     return pixels;
+  }
+
+  public static int[] sample(int index) {
+    int night = index - KINDS;
+    String[] icon = night < 0 ? ICONS[index]
+        : icon(NIGHT_SAMPLES[night / MOON_PHASES], false, night % MOON_PHASES / (double) MOON_PHASES);
+    int[] pixels = new int[SIZE * SIZE];
+    stamp(pixels, icon, (SIZE - icon[0].length()) / 2, (SIZE - icon.length) / 2, ICON);
+    return pixels;
+  }
+
+  private static String[] icon(int kind, boolean day, double moon) {
+    if (day) return ICONS[kind];
+    if (kind == CLEAR) return moon(moon, MOON_SIZE, MOON_RADIUS, '#');
+    String[] small = moon(moon, SMALL_MOON, SMALL_MOON_RADIUS, '+');
+    if (kind == PARTLY) return behind(NIGHT_CLOUD, small);
+    return kind == SHOWERS ? behind(SHOWER_CLOUD, small) : ICONS[kind];
   }
 
   public static int[] detail(int max, int min) {
@@ -257,19 +375,30 @@ public final class Face {
     if (degree) stamp(pixels, DEGREE, x, top, level);
   }
 
-  private static String[] moon(double phase) {
-    String[] rows = new String[MOON_HEIGHT];
+  private static String[] moon(double phase, int size, double radius, char light) {
+    String[] rows = new String[size];
     double edge = Math.cos(2 * Math.PI * phase);
-    for (int y = 0; y < MOON_HEIGHT; y++) {
+    for (int y = 0; y < size; y++) {
       StringBuilder row = new StringBuilder();
-      double dy = y - MOON_HEIGHT / 2;
-      double reach = Math.sqrt(Math.max(0, MOON_RADIUS * MOON_RADIUS - dy * dy));
-      for (int x = 0; x < MOON_WIDTH; x++) {
-        double dx = x - MOON_WIDTH / 2;
+      double dy = y - size / 2;
+      double reach = Math.sqrt(Math.max(0, radius * radius - dy * dy));
+      for (int x = 0; x < size; x++) {
+        double dx = x - size / 2;
         boolean lit = phase < 0.5 ? dx > reach * edge : dx < -reach * edge;
-        row.append(Math.abs(dx) > reach ? '.' : lit ? '#' : '-');
+        row.append(Math.abs(dx) > reach ? '.' : lit ? light : '-');
       }
       rows[y] = row.toString();
+    }
+    return rows;
+  }
+
+  // the sun or moon peeks out from the top-left corner, behind the cloud
+  private static String[] behind(String[] cloud, String[] back) {
+    String[] rows = new String[cloud.length];
+    for (int y = 0; y < cloud.length; y++) {
+      char[] row = cloud[y].toCharArray();
+      for (int x = 0; y < back.length && x < back[y].length(); x++) if (row[x] == '.') row[x] = back[y].charAt(x);
+      rows[y] = new String(row).replace('_', '.');
     }
     return rows;
   }

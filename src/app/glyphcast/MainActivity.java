@@ -55,6 +55,7 @@ public class MainActivity extends Activity {
   private static final long REDRAW = 15000;
   private static final int ICON = 24;
   private static final int PILL_ICON = 18;
+  private static final int SAMPLE_COLUMNS = 4;
   private static final String[] LANGUAGES = {"", "es", "en", "zh-CN"};
 
   private final Handler handler = new Handler(Looper.getMainLooper());
@@ -165,7 +166,12 @@ public class MainActivity extends Activity {
     hours.addView(dash, new LinearLayout.LayoutParams(dp(GAP), LinearLayout.LayoutParams.WRAP_CONTENT));
     hours.addView(hour(Weather.NIGHT_TO, Weather.NIGHT_END));
     display.addView(setting(R.drawable.ic_moon, R.string.night_hours, hours, false));
+    LinearLayout gallery = gallery();
+    TextView icons = chip(getString(R.string.preview_icons));
+    icons.setOnClickListener(view -> gallery.setVisibility(gallery.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE));
+    display.addView(setting(R.drawable.ic_cloud, R.string.weather_icons, icons, false));
     page.addView(display, margins(match(), GAP));
+    page.addView(gallery, margins(match(), GAP / 2));
 
     TextView activate = pill(R.string.activate, R.drawable.ic_add, TEXT, BACKGROUND);
     activate.setOnClickListener(view -> openToys());
@@ -222,7 +228,50 @@ public class MainActivity extends Activity {
     updated.setText(time == 0 ? "" : getString(R.string.updated,
         DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)));
     long interval = Face.interval(Weather.scene(this));
-    handler.postDelayed(redraw, interval > 0 ? interval - System.currentTimeMillis() % interval : REDRAW);
+    long next = interval > 0 ? interval - System.currentTimeMillis() % interval : REDRAW;
+    long sample = Weather.sampleLeft(this);
+    handler.postDelayed(redraw, sample > 0 ? Math.min(next, sample) : next);
+  }
+
+  private String label(String[] names, int index) {
+    if (index < Face.KINDS) return names[index];
+    int night = index - Face.KINDS;
+    String moon = names[Face.KINDS + night % Face.MOON_PHASES];
+    int sky = night / Face.MOON_PHASES;
+    return sky == 0 ? moon : getString(sky == 1 ? R.string.cloudy_moon : R.string.showers_moon, moon);
+  }
+
+  private LinearLayout gallery() {
+    LinearLayout gallery = card();
+    gallery.setVisibility(View.GONE);
+    String[] names = getResources().getStringArray(R.array.icon_names);
+    LinearLayout line = null;
+    for (int i = 0; i < Face.SAMPLES + (SAMPLE_COLUMNS - Face.SAMPLES % SAMPLE_COLUMNS) % SAMPLE_COLUMNS; i++) {
+      if (i % SAMPLE_COLUMNS == 0) {
+        line = row();
+        line.setGravity(Gravity.TOP);
+        gallery.addView(line);
+      }
+      LinearLayout cell = new LinearLayout(this);
+      cell.setOrientation(LinearLayout.VERTICAL);
+      if (i < Face.SAMPLES) {
+        int index = i;
+        MatrixView icon = new MatrixView(this);
+        icon.show(Face.sample(index));
+        cell.addView(icon, match());
+        String label = label(names, index);
+        TextView name = text(label, 11, MUTED, false);
+        name.setGravity(Gravity.CENTER);
+        cell.addView(name, margins(match(), 4));
+        cell.setContentDescription(label);
+        cell.setOnClickListener(view -> {
+          prefs.edit().putInt(Weather.SAMPLE, index)
+              .putLong(Weather.SAMPLE_UNTIL, System.currentTimeMillis() + Weather.SAMPLE_TIME).apply();
+        });
+      }
+      line.addView(cell, tileSize());
+    }
+    return gallery;
   }
 
   private void search() {
@@ -320,6 +369,7 @@ public class MainActivity extends Activity {
     for (int i = 0; i < labels.length; i++) {
       RadioButton option = new RadioButton(this);
       option.setId(i + 1);
+      option.setSaveEnabled(false); // ids repeat across groups; prefs are the source of truth, so never restore them
       option.setButtonDrawable(null);
       option.setGravity(Gravity.CENTER);
       option.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -369,11 +419,7 @@ public class MainActivity extends Activity {
   }
 
   private TextView hour(String key, int fallback) {
-    TextView chip = text(clock(prefs.getInt(key, fallback)), 14, TEXT, true);
-    chip.setGravity(Gravity.CENTER);
-    chip.setPadding(dp(14), 0, dp(14), 0);
-    chip.setMinHeight(dp(CONTROL - 6));
-    chip.setBackground(round(FIELD, CONTROL / 2));
+    TextView chip = chip(clock(prefs.getInt(key, fallback)));
     chip.setOnClickListener(view -> {
       int minutes = prefs.getInt(key, fallback);
       new TimePickerDialog(this, (picker, hour, minute) -> {
@@ -381,6 +427,15 @@ public class MainActivity extends Activity {
         chip.setText(clock(hour * 60 + minute));
       }, minutes / 60, minutes % 60, DateFormat.is24HourFormat(this)).show();
     });
+    return chip;
+  }
+
+  private TextView chip(String label) {
+    TextView chip = text(label, 14, TEXT, true);
+    chip.setGravity(Gravity.CENTER);
+    chip.setPadding(dp(14), 0, dp(14), 0);
+    chip.setMinHeight(dp(CONTROL - 6));
+    chip.setBackground(round(FIELD, CONTROL / 2));
     return chip;
   }
 

@@ -34,6 +34,9 @@ final class Weather {
   static final String POCKET = "pocket";
   static final String NIGHT_FROM = "night_from";
   static final String NIGHT_TO = "night_to";
+  static final String SAMPLE = "sample";
+  static final String SAMPLE_UNTIL = "sample_until";
+  static final long SAMPLE_TIME = 5000;
   static final int CLOCK_AUTO = 0;
   static final int CLOCK_24 = 1;
   static final int CLOCK_12 = 2;
@@ -134,15 +137,22 @@ final class Weather {
     boolean weather = fresh(context) && prefs.getBoolean(SHOW_WEATHER, true);
     BatteryManager manager = context.getSystemService(BatteryManager.class);
     int battery = prefs.getBoolean(SHOW_BATTERY, true) ? manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) : -1;
+    boolean day = prefs.getBoolean("day", true);
+    int eclipse = Face.eclipse(now.getTimeInMillis(), day);
     return new Face.Scene(hour, now.get(Calendar.MINUTE), weather ? degrees(prefs, "celsius") : null,
-        Face.kind(prefs.getInt("code", 0)), prefs.getBoolean("day", true), Face.moonPhase(now.getTimeInMillis()),
+        eclipse >= 0 ? eclipse : Face.kind(prefs.getInt("code", 0)), day, Face.moonPhase(now.getTimeInMillis()),
         battery, manager.isCharging(), weather && prefs.getBoolean(SHOW_RAIN, true) && prefs.getBoolean("rain_soon", false),
         System.currentTimeMillis() / Face.FRAME, prefs.getInt(LAYOUT, Face.WEATHER_ON_TOP), twelve,
         !weather || prefs.getBoolean(SHOW_TIME, true));
   }
 
   static int[] frame(Context context) {
+    if (sampleLeft(context) > 0) return dim(context, Face.sample(prefs(context).getInt(SAMPLE, 0)));
     return dim(context, Face.draw(scene(context)));
+  }
+
+  static long sampleLeft(Context context) {
+    return Math.max(0, prefs(context).getLong(SAMPLE_UNTIL, 0) - System.currentTimeMillis());
   }
 
   static int[] detail(Context context) {

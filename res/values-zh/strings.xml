@@ -33,4 +33,30 @@
   <string name="long_press">长按 Glyph 按钮：今日最高和最低气温</string>
   <string name="credit">天气数据：Open-Meteo</string>
   <string name="updated">更新于%1$s</string>
+  <string name="weather_icons">天气图标</string>
+  <string name="preview_icons">预览图标</string>
+  <string name="cloudy_moon">%1$s（多云）</string>
+  <string name="showers_moon">%1$s（阵雨）</string>
+  <string-array name="icon_names">
+    <item>晴</item>
+    <item>局部多云</item>
+    <item>阴</item>
+    <item>雾</item>
+    <item>雨</item>
+    <item>雪</item>
+    <item>雷暴</item>
+    <item>阵雨</item>
+    <item>冰雹</item>
+    <item>雨夹雪</item>
+    <item>日食</item>
+    <item>月食</item>
+    <item>新月</item>
+    <item>蛾眉月</item>
+    <item>上弦月</item>
+    <item>盈凸月</item>
+    <item>满月</item>
+    <item>亏凸月</item>
+    <item>下弦月</item>
+    <item>残月</item>
+  </string-array>
 </resources>

@@ -33,4 +33,30 @@
   <string name="long_press">Mantén pulsado el botón Glyph: máxima y mínima de hoy</string>
   <string name="credit">Datos del tiempo: Open-Meteo</string>
   <string name="updated">Actualizado %1$s</string>
+  <string name="weather_icons">Iconos del tiempo</string>
+  <string name="preview_icons">Ver iconos</string>
+  <string name="cloudy_moon">%1$s con nubes</string>
+  <string name="showers_moon">%1$s con chubascos</string>
+  <string-array name="icon_names">
+    <item>Despejado</item>
+    <item>Algo nuboso</item>
+    <item>Nublado</item>
+    <item>Niebla</item>
+    <item>Lluvia</item>
+    <item>Nieve</item>
+    <item>Tormenta</item>
+    <item>Chubascos</item>
+    <item>Granizo</item>
+    <item>Aguanieve</item>
+    <item>Eclipse solar</item>
+    <item>Eclipse lunar</item>
+    <item>Luna nueva</item>
+    <item>Luna creciente</item>
+    <item>Cuarto creciente</item>
+    <item>Gibosa creciente</item>
+    <item>Luna llena</item>
+    <item>Gibosa menguante</item>
+    <item>Cuarto menguante</item>
+    <item>Luna menguante</item>
+  </string-array>
 </resources>

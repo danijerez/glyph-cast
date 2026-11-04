@@ -38,4 +38,30 @@
   <string name="long_press">Hold the Glyph Button: today\'s high and low</string>
   <string name="credit">Weather data by Open-Meteo</string>
   <string name="updated">Updated %1$s</string>
+  <string name="weather_icons">Weather icons</string>
+  <string name="preview_icons">Preview icons</string>
+  <string name="cloudy_moon">%1$s with clouds</string>
+  <string name="showers_moon">%1$s with showers</string>
+  <string-array name="icon_names">
+    <item>Clear</item>
+    <item>Partly cloudy</item>
+    <item>Cloudy</item>
+    <item>Fog</item>
+    <item>Rain</item>
+    <item>Snow</item>
+    <item>Storm</item>
+    <item>Showers</item>
+    <item>Hail</item>
+    <item>Sleet</item>
+    <item>Solar eclipse</item>
+    <item>Lunar eclipse</item>
+    <item>New moon</item>
+    <item>Waxing crescent</item>
+    <item>First quarter</item>
+    <item>Waxing gibbous</item>
+    <item>Full moon</item>
+    <item>Waning gibbous</item>
+    <item>Last quarter</item>
+    <item>Waning crescent</item>
+  </string-array>
 </resources>
