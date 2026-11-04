@@ -24,7 +24,7 @@ const GLYPH_SDK = { url: 'https://github.com/Nothing-Developer-Programme/GlyphMa
 const R8 = { url: 'https://dl.google.com/dl/android/maven2/com/android/tools/r8/8.13.25/r8-8.13.25.jar', file: join(SDK, 'r8-8.13.25.jar') }
 const MIN_SDK = 34
 const TARGET_SDK = 34
-const VERSION = { code: '16', name: '2.3.0' }
+const VERSION = { code: '17', name: '2.4.0' }
 const KEY = {
   file: process.env.GLYPHCAST_KEYSTORE ?? join(SDK, 'glyph.keystore'),
   alias: process.env.GLYPHCAST_KEY_ALIAS ?? 'glyph',
