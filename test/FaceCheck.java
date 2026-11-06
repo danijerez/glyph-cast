@@ -28,20 +28,31 @@ public final class FaceCheck {
         for (int kind = Face.CLEAR; kind < Face.KINDS; kind++) {
           for (int battery : new int[] {-1, 0, 10, 100}) {
             for (boolean clock : new boolean[] {true, false}) {
-              inside(Face.draw(new Face.Scene(23, 59, temperature, kind, kind % 2 == 0, 0.3, battery, battery == 10, true, 3, layout, false, clock)));
+              inside(Face.draw(new Face.Scene(23, 59, temperature, kind, kind % 2 == 0, 0.3, battery, battery == 10, true, 3, layout, false, clock, false, true, true)));
+              for (int tick = 0; tick < 8; tick++) {
+                inside(Face.draw(new Face.Scene(23, 59, temperature, kind, kind % 2 == 0, 0.3, battery, false, true, tick, layout, false, clock, true, true, true)));
+              }
             }
           }
         }
       }
     }
     inside(Face.detail(-12, 35));
+    for (int layout : new int[] {Face.WEATHER_ON_TOP, Face.TIME_ON_TOP}) {
+      for (Integer temperature : new Integer[] {null, -12, 21}) {
+        for (boolean clock : new boolean[] {true, false}) {
+          inside(Face.draw(new Face.Scene(9, 41, temperature, Face.RAIN, true, 0, 60, true, true, 5, layout, false, clock, true, true, false)));
+        }
+      }
+    }
     for (int i = 0; i < Face.SAMPLES; i++) {
-      int[] sample = Face.sample(i);
+      int[] sample = Face.sample(i, -1);
+      for (int tick = 0; tick < 8; tick++) inside(Face.sample(i, tick));
       inside(sample);
       check(java.util.Arrays.stream(sample).anyMatch(level -> level > 0), "sample " + i + " is empty");
     }
 
-    int[] twelve = Face.draw(new Face.Scene(8, 8, null, Face.CLEAR, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, true, true));
+    int[] twelve = Face.draw(new Face.Scene(8, 8, null, Face.CLEAR, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, true, true, false, true, true));
     int left = Face.SIZE;
     int right = 0;
     for (int i = 0; i < twelve.length; i++) {
@@ -51,12 +62,32 @@ public final class FaceCheck {
     }
     check(Math.abs(left - (Face.SIZE - 1 - right)) <= 1, "12 h clock off centre: " + left + ".." + right);
 
-    int[] untimed = Face.draw(new Face.Scene(12, 0, 21, Face.CLEAR, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, false));
-    int[] timed = Face.draw(new Face.Scene(12, 0, 21, Face.CLEAR, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, true));
+    int[] untimed = Face.draw(new Face.Scene(12, 0, 21, Face.CLEAR, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, false, false, true, true));
+    int[] timed = Face.draw(new Face.Scene(12, 0, 21, Face.CLEAR, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, true, false, true, true));
     check(!java.util.Arrays.equals(untimed, timed), "hiding the time changes the face");
 
-    Face.Scene low = new Face.Scene(12, 0, null, Face.CLEAR, true, 0, 10, false, false, 0, Face.WEATHER_ON_TOP, false, true);
+    Face.Scene low = new Face.Scene(12, 0, null, Face.CLEAR, true, 0, 10, false, false, 0, Face.WEATHER_ON_TOP, false, true, false, true, true);
     check(Face.interval(low) == Face.FRAME * 4, "low battery blinks slowly");
+
+    for (int kind : new int[] {Face.RAIN, Face.SNOW, Face.FOG, Face.CLEAR, Face.SHOWERS}) {
+      int[] first = Face.draw(new Face.Scene(12, 0, 21, kind, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, true, true, true, true));
+      int[] later = Face.draw(new Face.Scene(12, 0, 21, kind, true, 0, -1, false, false, 3, Face.WEATHER_ON_TOP, false, true, true, true, true));
+      int[] still = Face.draw(new Face.Scene(12, 0, 21, kind, true, 0, -1, false, false, 2, Face.WEATHER_ON_TOP, false, true, false, true, true));
+      check(!java.util.Arrays.equals(first, later), "kind " + kind + " animates");
+      check(java.util.Arrays.equals(still, Face.draw(new Face.Scene(12, 0, 21, kind, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, true, false, true, true))),
+          "kind " + kind + " stays still without animation");
+    }
+    for (boolean clock : new boolean[] {true, false}) {
+      for (int layout : new int[] {Face.WEATHER_ON_TOP, Face.TIME_ON_TOP}) {
+        int[] bare = Face.draw(new Face.Scene(12, 0, -12, Face.SNOW, true, 0, 50, false, true, 0, layout, false, clock, false, false, true));
+        int[] full = Face.draw(new Face.Scene(12, 0, -12, Face.SNOW, true, 0, 50, false, true, 0, layout, false, clock, false, true, true));
+        inside(bare);
+        check(!java.util.Arrays.equals(bare, full), "hiding the temperature changes the face");
+      }
+    }
+    Face.Scene moving =new Face.Scene(12, 0, 21, Face.RAIN, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, true, true, true, true);
+    Face.Scene cloudy = new Face.Scene(12, 0, 21, Face.CLOUD, true, 0, -1, false, false, 0, Face.WEATHER_ON_TOP, false, true, true, true, true);
+    check(Face.interval(moving) == Face.FRAME && Face.interval(cloudy) == 0, "only moving icons redraw every frame");
     System.out.println("Face checks passed");
   }
 

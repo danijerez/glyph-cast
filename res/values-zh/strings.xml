@@ -17,6 +17,13 @@
   <string name="clock_auto">自动</string>
   <string name="clock_24">24 时</string>
   <string name="clock_12">12 时</string>
+  <string name="refresh_every">天气更新</string>
+  <string name="minutes_15">15 分钟</string>
+  <string name="minutes_30">30 分钟</string>
+  <string name="hour_1">1 小时</string>
+  <string name="battery_style">电量样式</string>
+  <string name="zigzag">锯齿</string>
+  <string name="dots">圆点</string>
   <string name="show_time">显示时间</string>
   <string name="show_weather">天气</string>
   <string name="show_battery">电量</string>
@@ -27,6 +34,10 @@
   <string name="night_hours">夜间时段</string>
   <string name="pocket">放入口袋时关闭</string>
   <string name="pocket_short">口袋</string>
+  <string name="show_temperature">显示温度</string>
+  <string name="temperature_short">温度</string>
+  <string name="animation">屏幕亮起时显示天气动画</string>
+  <string name="animation_short">动画</string>
   <string name="brightness">亮度</string>
   <string name="activate">添加到 Glyph 玩具</string>
   <string name="no_toys">打开 设置 › Glyph 界面 › Glyph 玩具</string>

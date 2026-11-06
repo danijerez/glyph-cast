@@ -134,10 +134,12 @@ public class MainActivity extends Activity {
     LinearLayout shown = row();
     shown.addView(tile(R.drawable.ic_clock, R.string.time, R.string.show_time, Weather.SHOW_TIME), tileSize());
     shown.addView(tile(R.drawable.ic_cloud, R.string.show_weather, R.string.show_weather, Weather.SHOW_WEATHER), tileSize());
+    shown.addView(tile(R.drawable.ic_thermometer, R.string.temperature_short, R.string.show_temperature, Weather.SHOW_TEMPERATURE), tileSize());
     shown.addView(tile(R.drawable.ic_battery, R.string.show_battery, R.string.show_battery, Weather.SHOW_BATTERY), tileSize());
     toggles.addView(shown);
     LinearLayout behaviour = row();
     behaviour.addView(tile(R.drawable.ic_drop, R.string.rain_short, R.string.show_rain, Weather.SHOW_RAIN), tileSize());
+    behaviour.addView(tile(R.drawable.ic_animation, R.string.animation_short, R.string.animation, Weather.ANIMATE), tileSize());
     behaviour.addView(tile(R.drawable.ic_moon, R.string.night_short, R.string.night, Weather.NIGHT), tileSize());
     behaviour.addView(tile(R.drawable.ic_pocket, R.string.pocket_short, R.string.pocket, Weather.POCKET), tileSize());
     toggles.addView(behaviour);
@@ -158,6 +160,12 @@ public class MainActivity extends Activity {
     display.addView(setting(R.drawable.ic_clock, R.string.clock, choice(
         new int[] {R.string.clock_auto, R.string.clock_24, R.string.clock_12}, null, prefs.getInt(Weather.CLOCK, Weather.CLOCK_AUTO),
         index -> prefs.edit().putInt(Weather.CLOCK, index).apply()), false));
+    display.addView(setting(R.drawable.ic_refresh, R.string.refresh_every, choice(
+        new int[] {R.string.minutes_15, R.string.minutes_30, R.string.hour_1}, null, prefs.getInt(Weather.REFRESH_EVERY, Weather.REFRESH_DEFAULT),
+        index -> prefs.edit().putInt(Weather.REFRESH_EVERY, index).apply()), false));
+    display.addView(setting(R.drawable.ic_battery, R.string.battery_style, choice(
+        new int[] {R.string.zigzag, R.string.dots}, null, prefs.getBoolean(Weather.BATTERY_ZIGZAG, true) ? 0 : 1,
+        index -> prefs.edit().putBoolean(Weather.BATTERY_ZIGZAG, index == 0).apply()), false));
     display.addView(setting(R.drawable.ic_sun, R.string.brightness, brightness(), true));
     LinearLayout hours = row();
     hours.addView(hour(Weather.NIGHT_FROM, Weather.NIGHT_START));
@@ -227,7 +235,7 @@ public class MainActivity extends Activity {
     long time = prefs.getLong("updated", 0);
     updated.setText(time == 0 ? "" : getString(R.string.updated,
         DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)));
-    long interval = Face.interval(Weather.scene(this));
+    long interval = Weather.interval(this);
     long next = interval > 0 ? interval - System.currentTimeMillis() % interval : REDRAW;
     long sample = Weather.sampleLeft(this);
     handler.postDelayed(redraw, sample > 0 ? Math.min(next, sample) : next);
@@ -257,7 +265,7 @@ public class MainActivity extends Activity {
       if (i < Face.SAMPLES) {
         int index = i;
         MatrixView icon = new MatrixView(this);
-        icon.show(Face.sample(index));
+        icon.show(Face.sample(index, -1));
         cell.addView(icon, match());
         String label = label(names, index);
         TextView name = text(label, 11, MUTED, false);

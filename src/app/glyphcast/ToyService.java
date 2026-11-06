@@ -43,6 +43,8 @@ public class ToyService extends Service implements GlyphMatrixManager.Callback {
     IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
     filter.addAction(Intent.ACTION_TIME_CHANGED);
     filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+    filter.addAction(Intent.ACTION_SCREEN_ON); // start or stop the icon animation with the screen
+    filter.addAction(Intent.ACTION_SCREEN_OFF);
     registerReceiver(ticker, filter);
     Weather.prefs(this).registerOnSharedPreferenceChangeListener(changed);
     pocket = new Pocket(getSystemService(SensorManager.class), this::render);
@@ -112,7 +114,7 @@ public class ToyService extends Service implements GlyphMatrixManager.Callback {
     handler.removeCallbacks(animate);
     if (!connected) return;
     boolean hidden = pocket.inside() && Weather.prefs(this).getBoolean(Weather.POCKET, true);
-    long interval = hidden || detail ? 0 : Face.interval(Weather.scene(this));
+    long interval = hidden || detail ? 0 : Weather.interval(this);
     if (interval > 0) handler.postDelayed(animate, interval - System.currentTimeMillis() % interval);
     else if (!hidden && !detail && Weather.sampleLeft(this) > 0) handler.postDelayed(animate, Weather.sampleLeft(this));
     int[] levels = hidden ? new int[Face.SIZE * Face.SIZE] : detail ? Weather.detail(this) : Weather.frame(this);

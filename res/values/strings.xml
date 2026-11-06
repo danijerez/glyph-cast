@@ -22,6 +22,13 @@
   <string name="clock_auto">Auto</string>
   <string name="clock_24">24 h</string>
   <string name="clock_12">12 h</string>
+  <string name="refresh_every">Weather update</string>
+  <string name="minutes_15">15 min</string>
+  <string name="minutes_30">30 min</string>
+  <string name="hour_1">1 h</string>
+  <string name="battery_style">Battery style</string>
+  <string name="zigzag">Zigzag</string>
+  <string name="dots">Dots</string>
   <string name="show_time">Show the time</string>
   <string name="show_weather">Weather</string>
   <string name="show_battery">Battery</string>
@@ -32,6 +39,10 @@
   <string name="night_hours">Night hours</string>
   <string name="pocket">Turn off in pocket</string>
   <string name="pocket_short">Pocket</string>
+  <string name="show_temperature">Show the temperature</string>
+  <string name="temperature_short">Temp.</string>
+  <string name="animation">Animate the weather while the screen is on</string>
+  <string name="animation_short">Animation</string>
   <string name="brightness">Brightness</string>
   <string name="activate">Add to Glyph Toys</string>
   <string name="no_toys">Open Settings › Glyph Interface › Glyph Toys</string>

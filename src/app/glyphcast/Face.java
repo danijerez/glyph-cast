@@ -47,27 +47,24 @@ public final class Face {
   private static final int TEMP = 170;
   private static final int ICON = 210;
   private static final int SHADE = 140;
-  private static final int BATTERY = 200;
-  private static final int TRACK = 60;
+  private static final int BATTERY = 110;
+  private static final int TRACK = 30;
   private static final int FAINT = 50;
-  private static final int MOON_SIZE = 9;
-  private static final double MOON_RADIUS = 4.4;
-  private static final int SMALL_MOON = 5;
-  private static final double SMALL_MOON_RADIUS = 2.4;
+  private static final int MOON_SIZE = 5;
+  private static final double MOON_RADIUS = 2.4;
   private static final double NEW_MOON_DAY = 10962.76;
   private static final double SYNODIC_MONTH = 29.530588853;
-  private static final int[] BATTERY_ROW = {14, 10};
+  private static final int[][] BATTERY_ROW = {{14, 9}, {14, 10}}; // [zigzag, dotted][layout], between the weather and the time
   private static final int BATTERY_ALONE_ROW = 22;
-  private static final int BATTERY_HALF = 7;
-  private static final int[] BAND_TOP = {4, 12};
-  private static final int[] TEMP_TOP = {6, 14};
-  private static final int[] TIME_TOP = {16, 4};
+  private static final int BATTERY_HALF = 8; // 17 LEDs; battery() also keeps it one LED clear of the rim
+  // [zigzag battery, dotted battery, no battery][layout]: without the battery the weather and the time close up around the centre
+  private static final int[][] BAND_TOP = {{4, 12}, {4, 12}, {5, 11}};
+  private static final int[][] TIME_TOP = {{17, 3}, {16, 4}, {15, 5}};
   private static final int GAP = 2;
-  private static final int BAND_WIDTH = 21;
-  private static final int SWEEP = 110;
+  private static final int SWEEP = 65;
   private static final int LOW_BATTERY = 15;
   private static final int BLINK = 4;
-  private static final int DROP_TOP = 22;
+  private static final int[] DROP_TOP = {0, 22}; // next to the weather: above it, or below it when the time is on top
   private static final int ALONE_ICON_TOP = 4;
   private static final int ALONE_TEMP_TOP = 14;
   private static final int DETAIL_TOP = 6;
@@ -100,7 +97,6 @@ public final class Face {
   };
 
   private static final String[] MINUS = {"..", "..", "##", "..", ".."};
-  private static final String[] DEGREE = {"##", "##"};
   private static final String[] DROP = {".#.", "###", "###"};
   private static final String[] UP = {".#.", "###", ".#.", ".#.", ".#."};
   private static final String[] DOWN = {".#.", ".#.", ".#.", "###", ".#."};
@@ -110,45 +106,44 @@ public final class Face {
     ".........",
     ".........",
     "....##...",
-    "...#..##.",
-    "..#.....#",
-    ".#......#",
+    "...#--##.",
+    "..#-----#",
+    ".#------#",
     ".#######."
   };
-  // '_' is cloud interior: hides whatever sits behind the cloud
   private static final String[] SHOWER_CLOUD = {
     ".........",
     ".........",
     "....##...",
-    "...#__##.",
-    "..#_____#",
-    ".#______#",
+    "...#--##.",
+    "..#-----#",
+    ".#------#",
     ".#######.",
-    "..#..#..#",
-    ".#..#..#."
+    "..+..+..+",
+    ".+..+..+."
   };
   private static final String[] SMALL_SUN = {"+.+.+", ".+++.", "+++++", ".+++.", "+.+.+"};
 
   private static final String[][] ICONS = {
     {
-      "....#....",
-      ".#.....#.",
+      "....+....",
+      ".+.....+.",
       "...###...",
-      "..#...#..",
-      "#.#...#.#",
-      "..#...#..",
+      "..#+++#..",
+      "+.#+++#.+",
+      "..#+++#..",
       "...###...",
-      ".#.....#.",
-      "....#...."
+      ".+.....+.",
+      "....+...."
     },
     {
       ".+..+....",
       "..+++....",
       ".+++++...",
       "..++##...",
-      ".+.#..##.",
-      "..#.....#",
-      ".#......#",
+      ".+.#--##.",
+      "..#-----#",
+      ".#------#",
       ".#######.",
       "........."
     },
@@ -156,9 +151,9 @@ public final class Face {
       ".........",
       ".........",
       "....###..",
-      ".##.#..#.",
-      "#..#....#",
-      "#.......#",
+      ".##.#--#.",
+      "#--#----#",
+      "#-------#",
       ".#######.",
       ".........",
       "........."
@@ -167,40 +162,40 @@ public final class Face {
       ".........",
       ".#######.",
       ".........",
-      "..#######",
+      "..+++++++",
       ".........",
       "#######..",
       ".........",
-      ".#######.",
+      ".+++++++.",
       "........."
     },
     {
       "....###..",
-      ".##.#..#.",
-      "#..#....#",
-      "#.......#",
+      ".##.#--#.",
+      "#--#----#",
+      "#-------#",
       ".#######.",
       ".........",
-      "..#..#..#",
-      ".#..#..#.",
+      "..+..+..+",
+      ".+..+..+.",
       "........."
     },
     {
       "....###..",
-      ".##.#..#.",
-      "#..#....#",
-      "#.......#",
+      ".##.#--#.",
+      "#--#----#",
+      "#-------#",
       ".#######.",
       ".........",
-      "..#...#..",
-      ".###.###.",
-      "..#...#.."
+      "..+...+..",
+      ".+#+.+#+.",
+      "..+...+.."
     },
     {
       "....###..",
-      ".##.#..#.",
-      "#..#....#",
-      "#.......#",
+      ".##.#--#.",
+      "#--#----#",
+      "#-------#",
       ".#######.",
       "....##...",
       "...##....",
@@ -210,25 +205,25 @@ public final class Face {
     behind(SHOWER_CLOUD, SMALL_SUN),
     {
       "....###..",
-      ".##.#..#.",
-      "#..#....#",
-      "#.......#",
+      ".##.#--#.",
+      "#--#----#",
+      "#-------#",
       ".#######.",
       ".........",
-      ".#..#..#.",
+      ".+..+..+.",
       ".........",
-      "...#..#.."
+      "...+..+.."
     },
     {
       "....###..",
-      ".##.#..#.",
-      "#..#....#",
-      "#.......#",
+      ".##.#--#.",
+      "#--#----#",
+      "#-------#",
       ".#######.",
       ".........",
-      "..#...#..",
-      ".#...###.",
-      "......#.."
+      "..+...+..",
+      ".+...+#+.",
+      "......+.."
     },
     {
       "....#....",
@@ -289,9 +284,11 @@ public final class Face {
   }
 
   public record Scene(int hour, int minute, Integer temperature, int kind, boolean day, double moon,
-      int battery, boolean charging, boolean rainSoon, long tick, int layout, boolean twelve, boolean clock) {}
+      int battery, boolean charging, boolean rainSoon, long tick, int layout, boolean twelve, boolean clock, boolean animate,
+      boolean showTemperature, boolean zigzag) {}
 
   public static long interval(Scene scene) {
+    if (scene.animate() && scene.temperature() != null && (moves(scene.kind(), scene.day()) || drop(scene))) return FRAME;
     if (scene.battery() < 0) return 0;
     if (scene.charging()) return FRAME;
     return scene.battery() <= LOW_BATTERY ? FRAME * BLINK : 0;
@@ -301,40 +298,58 @@ public final class Face {
     int[] pixels = new int[SIZE * SIZE];
     int hour = scene.hour();
     int minute = scene.minute();
-    int[] digits = {scene.twelve() && hour < 10 ? -1 : hour / 10, hour % 10, minute / 10, minute % 10};
+    int[] digits = {scene.twelve() && hour < 10 ? -1 : hour / 10, hour % 10, minute / 10, minute % 10}; // 12 h drops the leading zero
     Integer temperature = scene.temperature();
     boolean alone = temperature == null || !scene.clock();
-    battery(pixels, scene, alone ? BATTERY_ALONE_ROW : BATTERY_ROW[scene.layout()]);
-    if (temperature == null) {
-      clock(pixels, digits, BIG, 9);
+    if (temperature == null) { // the time alone, the battery right below it
+      int rows = scene.zigzag() ? 2 : 1;
+      int top = (SIZE + 1 - BIG[0].length - (scene.battery() < 0 ? 0 : 1 + rows)) / 2; // centre the time, with the battery if shown
+      clock(pixels, digits, BIG, top);
+      battery(pixels, scene, top + BIG[0].length + 1, rows);
       return pixels;
     }
+    if (alone) battery(pixels, scene, BATTERY_ALONE_ROW, 1); // one dotted row: no room for the zigzag under the big temperature
+    else battery(pixels, scene, BATTERY_ROW[scene.zigzag() ? 0 : 1][scene.layout()], scene.zigzag() ? 2 : 1);
     int kind = scene.kind();
-    boolean drop = scene.rainSoon() && (kind < RAIN || kind > SLEET);
+    boolean drop = drop(scene);
+    int dropLevel = scene.animate() && scene.tick() / 2 % 2 == 1 ? SHADE : ICON; // the rain alert pulses
     String[] icon = icon(kind, scene.day(), scene.moon());
+    if (scene.animate()) icon = animate(icon, kind, scene.day(), scene.tick());
     String text = Integer.toString(Math.abs(temperature));
     int sign = temperature < 0 ? MINUS[0].length() + 1 : 0;
     if (alone) {
-      if (drop) stamp(pixels, DROP, (SIZE - DROP[0].length()) / 2, 0, ICON);
+      if (drop) stamp(pixels, DROP, (SIZE - DROP[0].length()) / 2, 0, dropLevel);
+      if (!scene.showTemperature()) { // the icon alone, in the middle of the matrix
+        stamp(pixels, icon, (SIZE - icon[0].length()) / 2, (SIZE - icon.length) / 2, ICON);
+        return pixels;
+      }
       stamp(pixels, icon, (SIZE - icon[0].length()) / 2, ALONE_ICON_TOP, ICON);
-      int width = sign + text.length() * (BIG[0][0].length() + 1) + DEGREE[0].length();
-      number(pixels, (SIZE - width) / 2, ALONE_TEMP_TOP, temperature, true, TEMP, BIG);
+      int width = sign + text.length() * (BIG[0][0].length() + 1) - 1;
+      number(pixels, (SIZE - width) / 2, ALONE_TEMP_TOP, temperature, TEMP, BIG);
       return pixels;
     }
-    clock(pixels, digits, SMALL, TIME_TOP[scene.layout()]);
-    if (drop) stamp(pixels, DROP, (SIZE - DROP[0].length()) / 2, DROP_TOP, ICON);
-    boolean degree = icon[0].length() + GAP + sign + text.length() * 4 + DEGREE[0].length() <= BAND_WIDTH;
-    int width = icon[0].length() + GAP + sign + text.length() * 4 + (degree ? DEGREE[0].length() : -1);
+    int mode = scene.battery() < 0 ? 2 : scene.zigzag() ? 0 : 1; // zigzag battery, dotted battery, no battery
+    int band = BAND_TOP[mode][scene.layout()];
+    clock(pixels, digits, SMALL, TIME_TOP[mode][scene.layout()]);
+    if (drop) stamp(pixels, DROP, (SIZE - DROP[0].length()) / 2, DROP_TOP[scene.layout()], dropLevel);
+    if (!scene.showTemperature()) { // the icon alone, centred in its band
+      stamp(pixels, icon, (SIZE - icon[0].length()) / 2, band, ICON);
+      return pixels;
+    }
+    int width = icon[0].length() + GAP + sign + text.length() * 4 - 1; // no degree sign: the minus always fits
     int x = (SIZE - width) / 2;
-    stamp(pixels, icon, x, BAND_TOP[scene.layout()], ICON);
-    number(pixels, x + icon[0].length() + GAP, TEMP_TOP[scene.layout()], temperature, degree, TEMP, SMALL);
+    stamp(pixels, icon, x, band, ICON);
+    number(pixels, x + icon[0].length() + GAP, band + (icon.length - SMALL[0].length) / 2, temperature, TEMP, SMALL);
     return pixels;
   }
 
-  public static int[] sample(int index) {
+  // one gallery icon, centred; tick < 0 draws it still
+  public static int[] sample(int index, long tick) {
     int night = index - KINDS;
-    String[] icon = night < 0 ? ICONS[index]
-        : icon(NIGHT_SAMPLES[night / MOON_PHASES], false, night % MOON_PHASES / (double) MOON_PHASES);
+    boolean day = night < 0;
+    int kind = day ? index : NIGHT_SAMPLES[night / MOON_PHASES];
+    String[] icon = icon(kind, day, day ? 0 : night % MOON_PHASES / (double) MOON_PHASES);
+    if (tick >= 0) icon = animate(icon, kind, day, tick);
     int[] pixels = new int[SIZE * SIZE];
     stamp(pixels, icon, (SIZE - icon[0].length()) / 2, (SIZE - icon.length) / 2, ICON);
     return pixels;
@@ -342,10 +357,20 @@ public final class Face {
 
   private static String[] icon(int kind, boolean day, double moon) {
     if (day) return ICONS[kind];
-    if (kind == CLEAR) return moon(moon, MOON_SIZE, MOON_RADIUS, '#');
-    String[] small = moon(moon, SMALL_MOON, SMALL_MOON_RADIUS, '+');
+    if (kind == CLEAR) return centred(moon(moon, MOON_SIZE, MOON_RADIUS, '#'));
+    String[] small = moon(moon, MOON_SIZE, MOON_RADIUS, '+');
     if (kind == PARTLY) return behind(NIGHT_CLOUD, small);
     return kind == SHOWERS ? behind(SHOWER_CLOUD, small) : ICONS[kind];
+  }
+
+  // the moon disc is as big as the sun's, centred in the 9 × 9 icon box
+  private static String[] centred(String[] disc) {
+    int size = ICONS[CLEAR].length;
+    String pad = ".".repeat((size - disc.length) / 2);
+    String[] rows = new String[size];
+    java.util.Arrays.fill(rows, ".".repeat(size));
+    for (int y = 0; y < disc.length; y++) rows[pad.length() + y] = pad + disc[y] + pad;
+    return rows;
   }
 
   public static int[] detail(int max, int min) {
@@ -357,13 +382,13 @@ public final class Face {
 
   private static void extreme(int[] pixels, String[] arrow, int value, int top, int level) {
     int sign = value < 0 ? MINUS[0].length() + 1 : 0;
-    int width = arrow[0].length() + 2 + sign + Integer.toString(Math.abs(value)).length() * 4 + DEGREE[0].length();
+    int width = arrow[0].length() + 2 + sign + Integer.toString(Math.abs(value)).length() * 4 - 1;
     int x = (SIZE - width) / 2;
     stamp(pixels, arrow, x, top, level);
-    number(pixels, x + arrow[0].length() + 2, top, value, true, level, SMALL);
+    number(pixels, x + arrow[0].length() + 2, top, value, level, SMALL);
   }
 
-  private static void number(int[] pixels, int x, int top, int value, boolean degree, int level, String[][] font) {
+  private static void number(int[] pixels, int x, int top, int value, int level, String[][] font) {
     if (value < 0) {
       stamp(pixels, MINUS, x, top + (font[0].length - MINUS.length) / 2, level);
       x += MINUS[0].length() + 1;
@@ -372,7 +397,6 @@ public final class Face {
       stamp(pixels, font[c - '0'], x, top, level);
       x += font[0][0].length() + 1;
     }
-    if (degree) stamp(pixels, DEGREE, x, top, level);
   }
 
   private static String[] moon(double phase, int size, double radius, char light) {
@@ -392,27 +416,75 @@ public final class Face {
     return rows;
   }
 
-  // the sun or moon peeks out from the top-left corner, behind the cloud
+  private static boolean drop(Scene scene) {
+    return scene.rainSoon() && (scene.kind() < RAIN || scene.kind() > SLEET);
+  }
+
+  public static boolean sampleMoves(int index) {
+    return index < KINDS ? moves(index, true) : moves(NIGHT_SAMPLES[(index - KINDS) / MOON_PHASES], false);
+  }
+
+  private static boolean moves(int kind, boolean day) {
+    return (kind >= FOG && kind <= SLEET) || (kind == CLEAR && day);
+  }
+
+  // One small step per frame: rays twinkle, fog drifts, the bolt flickers, rain, hail and sleet fall, snow falls slower.
+  private static String[] animate(String[] icon, int kind, boolean day, long tick) {
+    if (!moves(kind, day)) return icon;
+    String[] rows = icon.clone();
+    boolean odd = tick / 2 % 2 == 1;
+    if (kind == CLEAR) {
+      int[][] rays = odd ? new int[][] {{1, 1}, {7, 1}, {1, 7}, {7, 7}} : new int[][] {{4, 0}, {0, 4}, {8, 4}, {4, 8}};
+      for (int[] ray : rays) {
+        char[] row = rows[ray[1]].toCharArray();
+        row[ray[0]] = '-';
+        rows[ray[1]] = new String(row);
+      }
+      return rows;
+    }
+    if (kind == FOG) {
+      if (!odd) return rows;
+      for (int y = 1; y < rows.length; y += 2) {
+        String row = rows[y];
+        rows[y] = y % 4 == 1 ? "." + row.substring(0, row.length() - 1) : row.substring(1) + ".";
+      }
+      return rows;
+    }
+    int base = 0;
+    for (int y = 0; y < rows.length; y++) if (rows[y].contains("#######")) base = y;
+    if (kind == STORM) {
+      if (tick % 4 == 3) for (int y = base + 1; y < rows.length; y++) rows[y] = rows[y].replace('#', '.');
+      return rows;
+    }
+    int fall = rows.length - base - 1;
+    int step = (int) ((kind == SNOW ? tick / 2 : tick) % fall);
+    for (int y = 0; y < fall; y++) rows[base + 1 + (y + step) % fall] = icon[base + 1 + y];
+    return rows;
+  }
+
+  // the sun or moon peeks out from the top-left corner; the cloud's faint fill hides what is behind it
   private static String[] behind(String[] cloud, String[] back) {
     String[] rows = new String[cloud.length];
     for (int y = 0; y < cloud.length; y++) {
       char[] row = cloud[y].toCharArray();
       for (int x = 0; y < back.length && x < back[y].length(); x++) if (row[x] == '.') row[x] = back[y].charAt(x);
-      rows[y] = new String(row).replace('_', '.');
+      rows[y] = new String(row);
     }
     return rows;
   }
 
-  private static void battery(int[] pixels, Scene scene, int row) {
+  // rows 2: a zigzag, even LEDs on the first row and odd ones on the second; rows 1: every other LED
+  private static void battery(int[] pixels, Scene scene, int row, int rows) {
     if (scene.battery() < 0) return;
-    int half = Math.min(BATTERY_HALF, HALF_WIDTHS[row]);
+    int half = BATTERY_HALF;
+    for (int y = row; y < row + rows; y++) half = Math.min(half, HALF_WIDTHS[y] - 1); // keep one LED clear of the rim
     int length = half * 2 + 1;
     int lit = Math.max(1, Math.round(Math.min(100, scene.battery()) * length / 100f));
     int sweep = scene.charging() ? (int) (scene.tick() % (length - lit + 1)) : 0;
     boolean blink = !scene.charging() && scene.battery() <= LOW_BATTERY && scene.tick() / BLINK % 2 == 1;
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i += 3 - rows) {
       int level = i < lit ? (blink ? TRACK : BATTERY) : i < lit + sweep ? SWEEP : TRACK;
-      pixels[row * SIZE + SIZE / 2 - half + i] = level;
+      pixels[(row + i % rows) * SIZE + SIZE / 2 - half + i] = level;
     }
   }
 

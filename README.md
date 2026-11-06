@@ -8,13 +8,14 @@ GlyphCast is a [Glyph Toy](https://nothing.community/t/glyph-sdk) for the 25 × 
 
 ## Features
 
-- **Time, weather and battery** on one screen, with a mirrored "time on top" layout, or weather and battery alone with the time turned off.
+- **Time, weather and battery** on one screen, with a mirrored "time on top" layout, or weather and battery alone with the time turned off; the temperature can be hidden too, leaving just the icon.
 - **Thin pixel weather icons**: sun, sun behind clouds, clouds, fog, rain, showers, snow, sleet, hail and storm.
 - **Real moon phase**, computed on the phone: the full moon disc on clear nights, and a small moon in the same phase behind the cloud on partly cloudy and showery nights.
 - **Eclipses**: solar eclipses by day and lunar eclipses by night replace the weather icon while they last, from NASA's tables up to 2040.
-- **Rain alert**: a small drop appears when rain is expected within the next hour.
+- **Rain alert**: a small drop appears next to the weather when rain is expected within the next hour.
+- **Animated weather** while the screen is on: rain, hail and sleet fall, snow drifts down, fog slides, the sun twinkles and the storm bolt flickers. With the screen off the matrix stays still to save battery.
 - **Today's high and low**: long press the Glyph Button to see them for 5 seconds.
-- **Battery bar** that sweeps while charging and blinks slowly below 15 %.
+- **Battery bar**, as a zigzag or a dotted line, that sweeps while charging and blinks slowly below 15 %. Without it, the weather and the time close up around the centre.
 - **Night mode** that dims the matrix at night, from 23:00 to 07:00 by default.
 - **Pocket detection** that turns the matrix off in a pocket but keeps it on when the phone lies face down on a table.
 - **Settings with live preview**: an icon for each setting, a city picker when several places match, language, layout, °C/°F, 12/24 h, what to show, brightness and night hours.
@@ -46,17 +47,21 @@ Updates install over the previous version and keep your settings, **as long as t
 | On top | Weather (icon and temperature above the time) or Time |
 | Temperature | °C or °F |
 | Time format | Auto (phone setting), 24 h or 12 h; 12 h drops the leading zero and centres the time |
+| Weather update | Fetch the weather every 15 min, 30 min or 1 h |
 | Time | Show or hide the time; without it the icon and a large temperature fill the matrix. The time comes back while there is no weather to show |
 | Weather | Show or hide the icon and temperature |
+| Temp. | Show or hide the temperature; without it the weather icon is centred on its own |
 | Battery | Show or hide the battery bar |
 | Rain alert | Show a drop when rain is expected within the next hour |
 | Night | 35 % brightness during the night hours |
 | Pocket | Turn off in a pocket, based on proximity + orientation |
+| Animation | Animate the weather icon and the rain alert while the screen is on |
+| Battery style | Zigzag (two rows) or dots (one row) |
 | Brightness | 20–100 % |
 | Night hours | Start and end time for night dimming, 23:00–07:00 by default |
 | Weather icons | *Preview icons* opens a list of every icon with its name; tap one to show it for 5 seconds on the preview and on the matrix |
 
-Time, weather, battery, rain, night and pocket are the six tiles below the preview; long press any icon to see what it does.
+Time, weather, temperature, battery, rain, animation, night and pocket are the eight tiles below the preview; long press any icon to see what it does.
 
 Every change is applied to the matrix immediately. The refresh button next to *Updated …* fetches fresh weather right away.
 
@@ -142,8 +147,8 @@ imgs/preview.png           Preview of the matrix
 
 ## How it works
 
-- When GlyphCast is selected, the system binds `ToyService`. The service draws a frame on each minute tick, on the Always-on event and whenever a setting changes. It draws faster only while the battery bar is animating.
-- Weather comes from [Open-Meteo](https://open-meteo.com) every 30 minutes; if the phone is offline, it retries after 5 minutes. A single small request returns the current conditions, the rain for the next hour in 15-minute steps, and today's high and low. Weather older than 3 hours is hidden.
+- When GlyphCast is selected, the system binds `ToyService`. The service draws a frame on each minute tick, on the Always-on event and whenever a setting changes. It draws faster only while something moves: the battery bar while charging or low, and the weather icon while the screen is on. Turning the screen on or off starts or stops the icon animation straight away.
+- Weather comes from [Open-Meteo](https://open-meteo.com) every 15, 30 or 60 minutes (30 by default); if the phone is offline, it retries after 5 minutes. A single small request returns the current conditions, the rain for the next hour in 15-minute steps, and today's high and low. Weather older than 3 hours is hidden.
 - The moon phase and the eclipses need no connection: the phase is computed from the date, and the eclipse dates are built in. A solar eclipse shows for two hours either side of its peak whenever it is day at your city, without checking whether its path crosses it; a lunar eclipse shows during its partial phase whenever it is night, which is when the moon is up.
 - Each frame lights about 100 of the 489 LEDs, and the app does no work while the toy is not selected, so the battery impact is minimal.
 

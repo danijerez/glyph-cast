@@ -17,6 +17,13 @@
   <string name="clock_auto">Auto</string>
   <string name="clock_24">24 h</string>
   <string name="clock_12">12 h</string>
+  <string name="refresh_every">Actualizar el tiempo</string>
+  <string name="minutes_15">15 min</string>
+  <string name="minutes_30">30 min</string>
+  <string name="hour_1">1 h</string>
+  <string name="battery_style">Estilo de batería</string>
+  <string name="zigzag">Zigzag</string>
+  <string name="dots">Puntos</string>
   <string name="show_time">Mostrar la hora</string>
   <string name="show_weather">Tiempo</string>
   <string name="show_battery">Batería</string>
@@ -27,6 +34,10 @@
   <string name="night_hours">Horario nocturno</string>
   <string name="pocket">Apagar en el bolsillo</string>
   <string name="pocket_short">Bolsillo</string>
+  <string name="show_temperature">Mostrar la temperatura</string>
+  <string name="temperature_short">Temp.</string>
+  <string name="animation">Animar el tiempo con la pantalla encendida</string>
+  <string name="animation_short">Animación</string>
   <string name="brightness">Brillo</string>
   <string name="activate">Añadir a Glyph Toys</string>
   <string name="no_toys">Abre Ajustes › Interfaz Glyph › Glyph Toys</string>

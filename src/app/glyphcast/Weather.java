@@ -3,6 +3,7 @@ package app.glyphcast;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.os.PowerManager;
 import android.text.format.DateFormat;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -18,7 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 final class Weather {
-  private static final long REFRESH = 30 * 60 * 1000L;
+  static final int[] REFRESH_MINUTES = {15, 30, 60};
+  static final int REFRESH_DEFAULT = 1; // 30 minutes
   private static final long RETRY = 5 * 60 * 1000L;
   private static final long EXPIRE = 3 * 60 * 60 * 1000L;
   private static final int TIMEOUT = 10000;
@@ -29,9 +31,13 @@ final class Weather {
   static final String SHOW_BATTERY = "show_battery";
   static final String BRIGHTNESS = "brightness";
   static final String SHOW_RAIN = "show_rain";
+  static final String SHOW_TEMPERATURE = "show_temperature";
+  static final String REFRESH_EVERY = "refresh_every";
+  static final String BATTERY_ZIGZAG = "battery_zigzag";
   static final String NIGHT = "night";
   static final String LAYOUT = "layout";
   static final String POCKET = "pocket";
+  static final String ANIMATE = "animate";
   static final String NIGHT_FROM = "night_from";
   static final String NIGHT_TO = "night_to";
   static final String SAMPLE = "sample";
@@ -91,7 +97,7 @@ final class Weather {
     SharedPreferences prefs = prefs(context);
     long now = System.currentTimeMillis();
     return prefs.contains("lat") && now - prefs.getLong("tried", 0) > RETRY
-        && (!prefs.contains("max") || now - prefs.getLong("updated", 0) > REFRESH);
+        && (!prefs.contains("max") || now - prefs.getLong("updated", 0) > REFRESH_MINUTES[prefs.getInt(REFRESH_EVERY, REFRESH_DEFAULT)] * 60000L);
   }
 
   static boolean refresh(Context context) {
@@ -143,12 +149,27 @@ final class Weather {
         eclipse >= 0 ? eclipse : Face.kind(prefs.getInt("code", 0)), day, Face.moonPhase(now.getTimeInMillis()),
         battery, manager.isCharging(), weather && prefs.getBoolean(SHOW_RAIN, true) && prefs.getBoolean("rain_soon", false),
         System.currentTimeMillis() / Face.FRAME, prefs.getInt(LAYOUT, Face.WEATHER_ON_TOP), twelve,
-        !weather || prefs.getBoolean(SHOW_TIME, true));
+        !weather || prefs.getBoolean(SHOW_TIME, true),
+        animates(context),
+        prefs.getBoolean(SHOW_TEMPERATURE, true), prefs.getBoolean(BATTERY_ZIGZAG, true));
   }
 
   static int[] frame(Context context) {
-    if (sampleLeft(context) > 0) return dim(context, Face.sample(prefs(context).getInt(SAMPLE, 0)));
+    if (sampleLeft(context) > 0) {
+      return dim(context, Face.sample(prefs(context).getInt(SAMPLE, 0), animates(context) ? System.currentTimeMillis() / Face.FRAME : -1));
+    }
     return dim(context, Face.draw(scene(context)));
+  }
+
+  // the icon animation runs only while the screen is on, to save battery
+  static boolean animates(Context context) {
+    return prefs(context).getBoolean(ANIMATE, true) && context.getSystemService(PowerManager.class).isInteractive();
+  }
+
+  // how often to redraw: every frame while something moves (the face, or a gallery icon being shown), 0 otherwise
+  static long interval(Context context) {
+    if (sampleLeft(context) > 0) return animates(context) && Face.sampleMoves(prefs(context).getInt(SAMPLE, 0)) ? Face.FRAME : 0;
+    return Face.interval(scene(context));
   }
 
   static long sampleLeft(Context context) {
