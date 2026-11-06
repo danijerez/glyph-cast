@@ -10,15 +10,15 @@ GlyphCast is a [Glyph Toy](https://nothing.community/t/glyph-sdk) for the 25 × 
 
 - **Time, weather and battery** on one screen, with a mirrored "time on top" layout, or weather and battery alone with the time turned off; the temperature can be hidden too, leaving just the icon.
 - **Thin pixel weather icons**: sun, sun behind clouds, clouds, fog, rain, showers, snow, sleet, hail and storm.
-- **Real moon phase**, computed on the phone: the full moon disc on clear nights, and a small moon in the same phase behind the cloud on partly cloudy and showery nights.
+- **Real moon phase**, computed on the phone: a moon as big as the sun's disc on clear nights, peeking out from behind the cloud on partly cloudy and showery nights.
 - **Eclipses**: solar eclipses by day and lunar eclipses by night replace the weather icon while they last, from NASA's tables up to 2040.
 - **Rain alert**: a small drop appears next to the weather when rain is expected within the next hour.
-- **Animated weather** while the screen is on: rain, hail and sleet fall, snow drifts down, fog slides, the sun twinkles and the storm bolt flickers. With the screen off the matrix stays still to save battery.
+- **Animated weather** while the screen is on: rain, hail and sleet fall, snow drifts down, fog slides, the sun twinkles, the storm bolt flickers and the rain alert pulses. With the screen off the matrix stays still to save battery.
 - **Today's high and low**: long press the Glyph Button to see them for 5 seconds.
 - **Battery bar**, as a zigzag or a dotted line, that sweeps while charging and blinks slowly below 15 %. Without it, the weather and the time close up around the centre.
 - **Night mode** that dims the matrix at night, from 23:00 to 07:00 by default.
 - **Pocket detection** that turns the matrix off in a pocket but keeps it on when the phone lies face down on a table.
-- **Settings with live preview**: an icon for each setting, a city picker when several places match, language, layout, °C/°F, 12/24 h, what to show, brightness and night hours.
+- **Settings with live preview**: an icon for each setting, a city picker when several places match, language, layout, °C/°F, 12/24 h, weather update interval, battery style, what to show, brightness and night hours.
 - **Icon gallery**: every weather icon, moon phase and eclipse in one list; tap one to see it on the matrix.
 - **Languages**: English, Spanish and Simplified Chinese, following the phone or chosen in the app.
 - **Always-on** support: the toy keeps updating while the screen is off.
@@ -59,7 +59,7 @@ Updates install over the previous version and keep your settings, **as long as t
 | Battery style | Zigzag (two rows) or dots (one row) |
 | Brightness | 20–100 % |
 | Night hours | Start and end time for night dimming, 23:00–07:00 by default |
-| Weather icons | *Preview icons* opens a list of every icon with its name; tap one to show it for 5 seconds on the preview and on the matrix |
+| Weather icons | *Preview icons* opens a list of every icon with its name; tap one to show it, animated, for 5 seconds on the preview and on the matrix |
 
 Time, weather, temperature, battery, rain, animation, night and pocket are the eight tiles below the preview; long press any icon to see what it does.
 
@@ -86,7 +86,7 @@ build.cmd
 ./build.sh
 ```
 
-The scripts check the prerequisites and run `node build.mjs`. The result is `bin/glyphcast.apk`, about 85 KB.
+The scripts check the prerequisites and run `node build.mjs`. The result is `bin/glyphcast.apk`, about 90 KB.
 
 ### What the build downloads
 
@@ -141,6 +141,7 @@ src/app/glyphcast/
   BrightnessListener.java  Brightness slider
 test/FaceCheck.java        Renderer checks, run by the build
 imgs/preview.png           Preview of the matrix
+LICENSE.md                 PolyForm Noncommercial License 1.0.0
 ```
 
 `Face.java` has no Android dependencies, so the build checks the matrix on the computer with plain Java (`test/FaceCheck.java`).
@@ -167,6 +168,6 @@ imgs/preview.png           Preview of the matrix
 - **Eclipse dates**: eclipse predictions by Fred Espenak, NASA/GSFC ([eclipse.gsfc.nasa.gov](https://eclipse.gsfc.nasa.gov)).
 - **Android build-tools and platform**: by downloading them through the build you accept the [Android Software Development Kit License Agreement](https://developer.android.com/studio/terms).
 - **D8 / R8**: BSD 3-Clause License.
-- **Icons, pixel fonts and code**: original work for this project, for personal use.
+- **Code, icons and pixel fonts**: © 2026 Dani Jerez, under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You may use, change and share them for any non-commercial purpose.
 
 Any APK built with the Glyph SDK inherits its non-commercial restriction.
